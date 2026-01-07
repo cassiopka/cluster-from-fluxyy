@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gitopssets-controller
+  namespace: flux-system
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: gitopssets-controller
+      version: "0.15.3" # Updated to match recent docs
+      sourceRef:
+        kind: HelmRepository
+        name: weave-gitops
+        namespace: flux-system
+  values:
+    # We create the CRDs automatically
+    install:
+      crds: CreateReplace
+    controllerManager:
+      manager:
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi

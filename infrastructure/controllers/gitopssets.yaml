@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gitopssets-controller
+  namespace: flux-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: gitopssets-controller
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: weaveworks-charts
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace

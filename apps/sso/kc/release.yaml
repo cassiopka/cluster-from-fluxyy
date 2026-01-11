@@ -23,7 +23,7 @@ spec:
       enabled: false
     ## Configure connection to external CNPG database
     externalDatabase:
-      host: cnpg-cluster-rw.cnpg  # Service name for your CNPG cluster (read-write)
+      host: psql-cluster-rw.cnpg  # Service name for your CNPG cluster (read-write)
       port: 5432
       user: keycloak       # Username created in CNPG
       database: keycloak   # Database name created in CNPG

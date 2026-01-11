@@ -1,0 +1,22 @@
+apiVersion: sets.gitops.pro/v1alpha1
+kind: GitOpsSet
+metadata:
+  name: debug-probe
+  namespace: flux-system
+spec:
+  generators:
+    - gitRepository:
+        repositoryRef: flux-system
+        directories:
+          # Target only one specific folder to avoid name collisions
+          - path: apps/web-servers/nginx-chart
+  templates:
+    - content:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: debug-output
+          namespace: flux-system
+        data:
+          # This is the magic line that will show us the secret keys
+          raw_element: '{{ .Element | toJson }}'

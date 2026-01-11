@@ -8,10 +8,8 @@ spec:
     - gitRepository:
         repositoryRef: flux-system
         files:
-          - path: 'apps/*/*'
+          - path: "apps/*/*/*"
   templates:
-    # Template 1: The Namespace
-    # This ensures the namespace exists before deploying apps into it.
     - content:
         apiVersion: v1
         kind: Namespace
@@ -19,9 +17,6 @@ spec:
           name: '{{ .Element.Path | splitList "/" | index 1 }}'
           labels:
             toolkit.fluxcd.io/tenant: '{{ .Element.Path | splitList "/" | index 1 }}'
-
-    # Template 2: The Application Loader (Kustomization)
-    # This tells Flux to apply the contents of the specific app folder.
     - content:
         apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
@@ -33,6 +28,6 @@ spec:
           sourceRef:
             kind: GitRepository
             name: flux-system
-          path: './{{ .Element.Path }}'
+          path: './{{ .Element.Dir }}'
           prune: true
           targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'

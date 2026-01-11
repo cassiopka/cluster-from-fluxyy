@@ -14,9 +14,11 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
+    replicaCount: 2
     service:
       type: ClusterIP
+    # Fixing the image pull error by defining specific image settings
     image:
       registry: public.ecr.aws
       repository: bitnami/nginx
-      tag: latest
+      tag: 1.25.3

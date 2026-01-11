@@ -11,26 +11,28 @@ spec:
           - path: apps/*/*
   templates:
     # Template 1: Namespace
+    # Path is "./apps/web-servers/..." -> Index 2 is "web-servers"
     - content:
         apiVersion: v1
         kind: Namespace
         metadata:
-          name: '{{ .Element.path | splitList "/" | index 1 }}'
+          name: '{{ .Element.Directory | splitList "/" | index 2 }}'
           labels:
-            toolkit.fluxcd.io/tenant: '{{ .Element.path | splitList "/" | index 1 }}'
+            toolkit.fluxcd.io/tenant: '{{ .Element.Directory | splitList "/" | index 2 }}'
 
     # Template 2: Kustomization
+    # Uses .Element.Base for the release name (e.g., "nginx-chart")
     - content:
         apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
         metadata:
-          name: '{{ .Element.path | splitList "/" | index 1 }}-{{ .Element.path | splitList "/" | index 2 }}'
+          name: '{{ .Element.Directory | splitList "/" | index 2 }}-{{ .Element.Base }}'
           namespace: flux-system
         spec:
           interval: 2m
           sourceRef:
             kind: GitRepository
             name: flux-system
-          path: './{{ .Element.path }}'
+          path: '{{ .Element.Directory }}'
           prune: true
-          targetNamespace: '{{ .Element.path | splitList "/" | index 1 }}'
+          targetNamespace: '{{ .Element.Directory | splitList "/" | index 2 }}'

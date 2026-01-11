@@ -8,10 +8,10 @@ spec:
   chart:
     spec:
       chart: minio  # <--- CHANGE THIS
-      version: latest # <--- CHANGE THIS
+      version: 17.0.21 # <--- CHANGE THIS
       sourceRef:
         kind: HelmRepository
-        name: bitnami-minio  # <--- CHANGE THIS
+        name: bitnami  # <--- CHANGE THIS
         namespace: flux-system
   values:           # <--- CHANGE THIS
     mode: standalone

@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: app         # LEAVE AS IS
+  namespace: default # LEAVE AS IS
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kafka  # <--- CHANGE THIS
+      version: 21.4.6   # <--- CHANGE THIS
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami  # <--- CHANGE THIS
+        namespace: flux-system
+  values:           # <--- CHANGE THIS
+    allowPlaintextListener: true
+    autoCreateTopicsEnable: true
+    clusterDomain: cluster.local
+    config: ""
+    defaultReplicationFactor: 1
+    deleteTopicEnable: true
+    heapOpts: -Xmx1024m -Xms1024m
+    kraft:
+      enabled: true
+      clusterId: REQ5MTFGMzEzOUFFNDA3Mz
+    livenessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    logPersistence:
+      enabled: false
+    numIoThreads: 8
+    numNetworkThreads: 3
+    numPartitions: 1
+    numRecoveryThreadsPerDataDir: 1
+    offsetsTopicReplicationFactor: 1
+    persistence:
+      enabled: false
+    readinessProbe:
+      enabled: true
+      failureThreshold: 6
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    replicaCount: 1
+    resources:
+      limits: {}
+      requests: {}
+    superUsers: User:admin
+    zookeeper:
+      enabled: false
+    image:
+      registry: public.ecr.aws

@@ -22,7 +22,13 @@ spec:
 
     cluster:
       instances: 1 
-      
+
+    initdb:
+      database: keycloak
+      owner: keycloak
+      secret:
+        name: app-credentials  # This secret must exist first!
+
       storage:
         size: 30Gi  # Minimal storage for testing
       

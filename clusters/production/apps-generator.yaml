@@ -6,8 +6,7 @@ metadata:
 spec:
   generators:
     - gitRepository:
-        repositoryRef:
-          name: flux-system
+        repositoryRef: flux-system
         directories:
           - path: apps/*/*
   templates:

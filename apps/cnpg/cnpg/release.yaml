@@ -22,12 +22,15 @@ spec:
 
     cluster:
       instances: 1 
-
-    initdb:
-      database: keycloak
-      owner: keycloak
-      secret:
-        name: app-credentials  # This secret must exist first!
+    # Role management configuration - create Keycloak user
+      roles:
+        - name: keycloak
+          ensure: present
+          login: true
+          superuser: false
+          comment: "Keycloak application user"
+          passwordSecret:
+            name: app-credentials 
 
       storage:
         size: 30Gi  # Minimal storage for testing
@@ -56,12 +59,3 @@ spec:
         connectionLimit: -1
         template: template1
 
-    # Role management configuration - create Keycloak user
-    roles:
-      - name: keycloak
-        ensure: present
-        login: true
-        superuser: false
-        comment: "Keycloak application user"
-        passwordSecret:
-          name: app-credentials 

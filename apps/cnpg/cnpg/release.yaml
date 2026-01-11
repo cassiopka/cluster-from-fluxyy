@@ -29,9 +29,6 @@ spec:
           login: true
           superuser: false
           comment: "Keycloak application user"
-          passwordSecret:
-            name: app-credentials 
-
       storage:
         size: 30Gi  # Minimal storage for testing
       

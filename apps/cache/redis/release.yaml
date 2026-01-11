@@ -1,0 +1,42 @@
+
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: app         # LEAVE AS IS
+  namespace: default # LEAVE AS IS
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: redis  # <--- CHANGE THIS
+      version: 17.9.2   # <--- CHANGE THIS
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami  # <--- CHANGE THIS
+        namespace: flux-system
+  values:           # <--- CHANGE THIS
+    replicas: 1
+    architecture: standalone
+    auth:
+      enabled: false
+    image:
+      registry: public.ecr.aws
+
+    master:
+      disableCommands: []
+      persistence:
+        enabled: false
+      resources:
+        requests:
+          cpu: 200m
+          memory: 1Gi
+        limits:
+          cpu: 500m
+          memory: 2Gi
+
+    commonConfiguration: |-
+      maxmemory 1024mb
+      maxmemory-policy allkeys-lru
+      appendonly yes
+

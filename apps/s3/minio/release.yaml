@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: minio  # <--- CHANGE THIS
-      version: 17.0.21 # <--- CHANGE THIS
+      version: 17.x # <--- CHANGE THIS
       sourceRef:
         kind: HelmRepository
         name: bitnami  # <--- CHANGE THIS

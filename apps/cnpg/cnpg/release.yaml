@@ -1,0 +1,61 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: app         # LEAVE AS IS
+  namespace: default # LEAVE AS IS
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: cluster  # <--- CHANGE THIS
+      version: 0.5.0 # <--- CHANGE THIS
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg  # <--- CHANGE THIS
+        namespace: flux-system
+  values:           # <--- CHANGE THIS
+    type: postgresql
+    version:
+      postgresql: "17"
+
+    mode: standalone
+
+    cluster:
+      instances: 1 
+      
+      storage:
+        size: 30Gi  # Minimal storage for testing
+      
+      # resources:
+      #   requests:
+      #     cpu: 250m
+      #     memory: 512Mi
+      #   limits:
+      #     cpu: 500m
+      #     memory: 1Gi
+      
+      enableSuperuserAccess: true
+      
+      postgresql:
+        parameters:
+          max_connections: 500
+          shared_buffers: 128MB
+
+    # Database management configuration - explicit database creation
+    databases:
+      - name: keycloak
+        ensure: present
+        owner: keycloak
+        encoding: UTF8
+        connectionLimit: -1
+        template: template1
+
+    # Role management configuration - create Keycloak user
+    roles:
+      - name: keycloak
+        ensure: present
+        login: true
+        superuser: false
+        comment: "Keycloak application user"
+        passwordSecret:
+          name: keycloak-db-secret  # We'll create this secret

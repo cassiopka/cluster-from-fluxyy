@@ -11,22 +11,22 @@ spec:
           - path: apps/*/*
   templates:
     # Template 1: Namespace
-    # Logic: Take path "./apps/web-servers/app1", go up one folder (dir) to "web-servers", take the base name.
+    # We grab index 2: "."(0) -> "apps"(1) -> "web-servers"(2)
     - content:
         apiVersion: v1
         kind: Namespace
         metadata:
-          name: '{{ .Element.Directory | dir | base }}'
+          name: '{{ index (splitList "/" .Element.Directory) 2 }}'
           labels:
-            toolkit.fluxcd.io/tenant: '{{ .Element.Directory | dir | base }}'
+            toolkit.fluxcd.io/tenant: '{{ index (splitList "/" .Element.Directory) 2 }}'
 
     # Template 2: Kustomization
-    # Logic: Namespace name + Release Name (Base)
+    # We combine Namespace (Index 2) and Release Name (.Element.Base)
     - content:
         apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
         metadata:
-          name: '{{ .Element.Directory | dir | base }}-{{ .Element.Base }}'
+          name: '{{ index (splitList "/" .Element.Directory) 2 }}-{{ .Element.Base }}'
           namespace: flux-system
         spec:
           interval: 2m
@@ -35,4 +35,4 @@ spec:
             name: flux-system
           path: '{{ .Element.Directory }}'
           prune: true
-          targetNamespace: '{{ .Element.Directory | dir | base }}'
+          targetNamespace: '{{ index (splitList "/" .Element.Directory) 2 }}'

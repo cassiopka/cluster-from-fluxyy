@@ -15,10 +15,9 @@ spec:
         namespace: flux-system
   values:
     global:
-      image:
-        imageRegistry: public.ecr.aws
+      imageRegistry: public.ecr.aws
       security:
-        allowInsecureImages: false
+        allowInsecureImages: true
 
     postgresql:
       enabled: false

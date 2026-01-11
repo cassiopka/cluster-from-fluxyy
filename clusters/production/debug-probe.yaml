@@ -8,15 +8,28 @@ spec:
     - gitRepository:
         repositoryRef: flux-system
         directories:
-          # Target only one specific folder to avoid name collisions
           - path: apps/web-servers/nginx-chart
   templates:
     - content:
         apiVersion: v1
         kind: ConfigMap
         metadata:
-          name: debug-output
+          name: debug-kustomization-output
           namespace: flux-system
         data:
-          # This is the magic line that will show us the secret keys
-          raw_element: '{{ .Element | toJson }}'
+          # This shows us exactly what Flux is trying to apply
+          kustomization.yaml: |
+            apiVersion: kustomize.toolkit.fluxcd.io/v1
+            kind: Kustomization
+            metadata:
+              name: test-object
+              namespace: flux-system
+            spec:
+              path: '{{ .Element.Directory }}'
+              patches:
+                - patch: |
+                    - op: replace
+                      path: /metadata/name
+                      value: {{ .Element.Base }}
+                  target:
+                    kind: HelmRelease

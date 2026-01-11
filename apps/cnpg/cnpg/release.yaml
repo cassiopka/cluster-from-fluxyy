@@ -58,4 +58,4 @@ spec:
         superuser: false
         comment: "Keycloak application user"
         passwordSecret:
-          name: keycloak-db-secret  # We'll create this secret
+          name: app-credentials 

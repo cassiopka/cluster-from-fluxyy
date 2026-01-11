@@ -17,17 +17,17 @@ spec:
           name: '{{ .Element.Path | splitList "/" | index 1 }}'
           labels:
             toolkit.fluxcd.io/tenant: '{{ .Element.Path | splitList "/" | index 1 }}'
-    - content:
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: '{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}'
-          namespace: flux-system
-        spec:
-          interval: 2m
-          sourceRef:
-            kind: GitRepository
-            name: flux-system
-          path: './{{ .Element.Dir }}'
-          prune: true
-          targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'
+    # - content:
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: '{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}'
+    #       namespace: flux-system
+    #     spec:
+    #       interval: 2m
+    #       sourceRef:
+    #         kind: GitRepository
+    #         name: flux-system
+    #       path: './{{ .Element.Dir }}'
+    #       prune: true
+    #       targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'

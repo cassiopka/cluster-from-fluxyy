@@ -10,8 +10,7 @@ spec:
         directories:
           - path: apps/*/*
   templates:
-    # Template 1: Namespace
-    # We grab index 2: "."(0) -> "apps"(1) -> "web-servers"(2)
+    # Template 1: Namespace (Level 1 Folder)
     - content:
         apiVersion: v1
         kind: Namespace
@@ -20,8 +19,7 @@ spec:
           labels:
             toolkit.fluxcd.io/tenant: '{{ index (splitList "/" .Element.Directory) 2 }}'
 
-    # Template 2: Kustomization
-    # We combine Namespace (Index 2) and Release Name (.Element.Base)
+    # Template 2: Kustomization with Auto-Renaming
     - content:
         apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
@@ -35,4 +33,13 @@ spec:
             name: flux-system
           path: '{{ .Element.Directory }}'
           prune: true
+          # Force the Namespace to match Level 1
           targetNamespace: '{{ index (splitList "/" .Element.Directory) 2 }}'
+          # Force the Release Name to match Level 2 (The Folder Name)
+          patches:
+            - patch: |
+                - op: replace
+                  path: /metadata/name
+                  value: {{ .Element.Base }}
+              target:
+                kind: HelmRelease

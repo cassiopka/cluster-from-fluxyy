@@ -1,0 +1,51 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: app         # LEAVE AS IS
+  namespace: default # LEAVE AS IS
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: minio-operator  # <--- CHANGE THIS
+      version: 4.3.7 # <--- CHANGE THIS
+      sourceRef:
+        kind: HelmRepository
+        name: minio  # <--- CHANGE THIS
+        namespace: flux-system
+  values:           # <--- CHANGE THIS
+    operator:
+      replicaCount: 1
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+
+    console:
+      replicaCount: 1
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+      ingress:
+        enabled: false
+
+    ## Minimal MinIO Tenant Configuration - STANDALONE MODE
+    tenants:
+      - name: minio-dev
+        namespace: default
+        pools:
+          ## STANDALONE MODE: Only 1 server needed
+          - servers: 1
+            volumesPerServer: 1
+            size: 30Gi
+            storageClassName: local-path  # Use local-path storage class
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+        mountPath: /export
+        subPath: /data
+        certificate:
+          requestAutoCert: true  # Auto-generate certificates for dev
+        podManagementPolicy: Parallel

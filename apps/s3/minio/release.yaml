@@ -15,6 +15,9 @@ spec:
         namespace: flux-system
   values:           # <--- CHANGE THIS
     operator:
+      image:
+        repository: quay.io/minio/operator
+
       replicaCount: 1
       securityContext:
         runAsUser: 1000
@@ -24,28 +27,10 @@ spec:
 
     console:
       replicaCount: 1
+      image:
+        repository: quay.io/minio/console
       securityContext:
         runAsUser: 1000
         runAsNonRoot: true
       ingress:
         enabled: false
-
-    ## Minimal MinIO Tenant Configuration - STANDALONE MODE
-    tenants:
-      - name: minio-dev
-        namespace: default
-        pools:
-          ## STANDALONE MODE: Only 1 server needed
-          - servers: 1
-            volumesPerServer: 1
-            size: 30Gi
-            storageClassName: local-path  # Use local-path storage class
-            resources:
-              requests:
-                cpu: 100m
-                memory: 256Mi
-        mountPath: /export
-        subPath: /data
-        certificate:
-          requestAutoCert: true  # Auto-generate certificates for dev
-        podManagementPolicy: Parallel

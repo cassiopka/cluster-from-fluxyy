@@ -7,9 +7,10 @@ spec:
   generators:
     - gitRepository:
         repositoryRef: flux-system
-        files:
-          - path: "apps/*/*/*"
+        directories:
+          - path: apps/*/*
   templates:
+    # Template 1: The Namespace (based on the first folder)
     - content:
         apiVersion: v1
         kind: Namespace
@@ -17,17 +18,19 @@ spec:
           name: '{{ .Element.Path | splitList "/" | index 1 }}'
           labels:
             toolkit.fluxcd.io/tenant: '{{ .Element.Path | splitList "/" | index 1 }}'
-    # - content:
-    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
-    #     kind: Kustomization
-    #     metadata:
-    #       name: '{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}'
-    #       namespace: flux-system
-    #     spec:
-    #       interval: 2m
-    #       sourceRef:
-    #         kind: GitRepository
-    #         name: flux-system
-    #       path: './{{ .Element.Dir }}'
-    #       prune: true
-    #       targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'
+
+    # Template 2: The Kustomization (targeting the specific release folder)
+    - content:
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: '{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}'
+          namespace: flux-system
+        spec:
+          interval: 2m
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+          path: "./{{ .Element.Path }}"
+          prune: true
+          targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'

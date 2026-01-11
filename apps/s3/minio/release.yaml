@@ -7,30 +7,51 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: minio-operator  # <--- CHANGE THIS
-      version: 4.3.7 # <--- CHANGE THIS
+      chart: minio  # <--- CHANGE THIS
+      version: 17.0.21 # <--- CHANGE THIS
       sourceRef:
         kind: HelmRepository
-        name: minio  # <--- CHANGE THIS
+        name: bitnami  # <--- CHANGE THIS
         namespace: flux-system
   values:           # <--- CHANGE THIS
-    operator:
-      image:
-        repository: quay.io/minio/operator
+    mode: standalone
 
-      replicaCount: 1
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        fsGroup: 1000
+    tls:
+      enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    persistence:
+      enabled: true
+      storageClass: "local-path"
+      size: 30Gi
+      accessMode: ReadWriteOnce
 
-    console:
-      replicaCount: 1
-      image:
-        repository: quay.io/minio/console
-      securityContext:
-        runAsUser: 1000
-        runAsNonRoot: true
-      ingress:
-        enabled: false
+    rootUser: minioadmin
+    rootPassword: minioadmin
+
+    # Expose both API and Console ports
+    service:
+      type: ClusterIP
+      ports:
+        api: 9000
+        console: 9001
+
+    # Disable monitoring for minimal setup
+    metrics:
+      enabled: false
+
+    # Disable all enterprise features
+    securityContext:
+      enabled: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+
+    # No need for ingress in dev
+    ingress:
+      enabled: false

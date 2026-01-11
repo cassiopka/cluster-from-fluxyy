@@ -1,0 +1,38 @@
+apiVersion: templates.weave.works/v1alpha1
+kind: GitOpsSet
+metadata:
+  name: apps-onboarding
+  namespace: flux-system
+spec:
+  generators:
+    - gitRepository:
+        repositoryRef: flux-system
+        files:
+          - path: "apps/*/*"
+  templates:
+    # Template 1: The Namespace
+    # This ensures the namespace exists before deploying apps into it.
+    - content:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: "{{ .Element.Path | splitList "/" | index 1 }}"
+          labels:
+            toolkit.fluxcd.io/tenant: "{{ .Element.Path | splitList "/" | index 1 }}"
+
+    # Template 2: The Application Loader (Kustomization)
+    # This tells Flux to apply the contents of the specific app folder.
+    - content:
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: "{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}"
+          namespace: flux-system
+        spec:
+          interval: 2m
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+          path: "./{{ .Element.Path }}"
+          prune: true
+          targetNamespace: "{{ .Element.Path | splitList "/" | index 1 }}"

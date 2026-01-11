@@ -6,25 +6,23 @@ metadata:
 spec:
   generators:
     - gitRepository:
-        repositoryRef: flux-system
+        repositoryRef:
+          name: flux-system
         directories:
           - path: apps/*/*
   templates:
-    # Template 1: The Namespace (based on the first folder)
     - content:
         apiVersion: v1
         kind: Namespace
         metadata:
-          name: '{{ .Element.Path | splitList "/" | index 1 }}'
+          name: "{{ .Element.Path | splitList '/' | index 1 }}"
           labels:
-            toolkit.fluxcd.io/tenant: '{{ .Element.Path | splitList "/" | index 1 }}'
-
-    # Template 2: The Kustomization (targeting the specific release folder)
+            toolkit.fluxcd.io/tenant: "{{ .Element.Path | splitList '/' | index 1 }}"
     - content:
         apiVersion: kustomize.toolkit.fluxcd.io/v1
         kind: Kustomization
         metadata:
-          name: '{{ .Element.Path | splitList "/" | index 1 }}-{{ .Element.Path | splitList "/" | index 2 }}'
+          name: "{{ .Element.Path | splitList '/' | index 1 }}-{{ .Element.Path | splitList '/' | index 2 }}"
           namespace: flux-system
         spec:
           interval: 2m
@@ -33,4 +31,4 @@ spec:
             name: flux-system
           path: "./{{ .Element.Path }}"
           prune: true
-          targetNamespace: '{{ .Element.Path | splitList "/" | index 1 }}'
+          targetNamespace: "{{ .Element.Path | splitList '/' | index 1 }}"

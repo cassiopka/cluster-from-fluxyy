@@ -16,3 +16,7 @@ spec:
   values:
     service:
       type: ClusterIP
+    image:
+      registry: public.ecr.aws
+      repository: bitnami/nginx
+      tag: latest

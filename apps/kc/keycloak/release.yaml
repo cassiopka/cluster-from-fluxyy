@@ -36,9 +36,9 @@ spec:
       enabled: false
 
     auth:
-      existingSecret: app-credentials
-      existingSecretAdminUserKey: username
-      existingSecretAdminPasswordKey: password
+      existingSecret: keycloak-admin-secret  # Use the new admin secret
+      existingSecretAdminPasswordKey: admin-password  # Correct key name
+      existingSecretAdminUserKey: admin-username     # Correct key name
     metrics:
       enabled: false
 

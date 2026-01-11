@@ -38,8 +38,8 @@ spec:
       
       postgresql:
         parameters:
-          max_connections: 300
-          shared_buffers: 128MB
+          max_connections: "300"
+          shared_buffers: "128MB"
 
     # Database management configuration - explicit database creation
     databases:

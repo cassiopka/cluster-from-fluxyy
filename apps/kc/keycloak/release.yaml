@@ -14,12 +14,14 @@ spec:
         name: bitnami-oci
         namespace: flux-system
   values:
-    image:
-      registry: public.ecr.aws
+    global:
+      image:
+        imageRegistry: public.ecr.aws
+      security:
+        allowInsecureImages: false
 
     postgresql:
       enabled: false
-
     ## Configure connection to external CNPG database
     externalDatabase:
       host: cnpg-cluster-rw.cnpg  # Service name for your CNPG cluster (read-write)

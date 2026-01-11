@@ -14,8 +14,11 @@ spec:
         name: bitnami-oci  # <--- CHANGE THIS
         namespace: flux-system
   values:           # <--- CHANGE THIS
-    image:
-      registry: public.ecr.aws
+    global:
+      image:
+        imageRegistry: public.ecr.aws
+      security:
+        allowInsecureImages: false
     mode: standalone
     tls:
       enabled: false

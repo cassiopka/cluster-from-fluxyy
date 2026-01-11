@@ -1,0 +1,49 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: test
+  namespace: default
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: keycloak
+      version: 25.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    postgresql:
+      enabled: false
+
+    ## Configure connection to external CNPG database
+    externalDatabase:
+      host: cnpg-cluster-rw.cnpg  # Service name for your CNPG cluster (read-write)
+      port: 5432
+      user: keycloak       # Username created in CNPG
+      database: keycloak   # Database name created in CNPG
+      existingSecret: app-credentials  # Secret containing the database password
+      existingSecretPasswordKey: password  # Key in the secret containing the password
+      schema: public
+
+    production: false
+    tls:
+      enabled: false
+
+    auth:
+      existingSecret: app-credentials
+      existingSecretAdminUserKey: username
+      existingSecretAdminPasswordKey: password
+    metrics:
+      enabled: false
+
+    replicaCount: 1
+
+    service:
+      type: ClusterIP
+      ports:
+        http: 8080
+
+    ingress:
+      enabled: false
